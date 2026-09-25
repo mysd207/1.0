@@ -3,16 +3,23 @@ import { INITIAL_STATE } from "./data/seed";
 import { insertAt, removeFrom, scoresFor } from "./lib/ranking";
 import type { AppState, Sentiment } from "./lib/types";
 
-const STORAGE_KEY = "beli-prototype:v1";
+const STORAGE_KEY = "beli-prototype:v2";
 
 export type Action =
-  | { type: "rank"; restaurantId: string; sentiment: Sentiment; index: number; note: string }
+  | { type: "rank"; restaurantId: string; sentiment: Sentiment; index: number; note: string; tags: string[] }
   | { type: "unrank"; restaurantId: string }
   | { type: "toggleWantToTry"; restaurantId: string }
+  | { type: "toggleLike"; activityId: string }
+  | { type: "toggleFollow"; friendId: string }
+  | { type: "setGoal"; goal: number }
   | { type: "reset" };
 
 function newId(): string {
   return Math.random().toString(36).slice(2, 10);
+}
+
+function toggle(list: string[], id: string): string[] {
+  return list.includes(id) ? list.filter((x) => x !== id) : [id, ...list];
 }
 
 export function reducer(state: AppState, action: Action): AppState {
@@ -24,11 +31,15 @@ export function reducer(state: AppState, action: Action): AppState {
       return {
         ...state,
         rankings,
-        visits: { ...state.visits, [action.restaurantId]: { note: action.note, visitedAt: now } },
+        visits: {
+          ...state.visits,
+          [action.restaurantId]: { note: action.note, tags: action.tags, visitedAt: now },
+        },
         wantToTry: state.wantToTry.filter((id) => id !== action.restaurantId),
         activity: [
           { id: newId(), userId: "me", restaurantId: action.restaurantId, kind: "ranked", score, note: action.note || undefined, at: now },
-          ...state.activity,
+          // Re-ranking replaces your earlier post for the same place.
+          ...state.activity.filter((a) => !(a.userId === "me" && a.kind === "ranked" && a.restaurantId === action.restaurantId)),
         ],
       };
     }
@@ -45,17 +56,21 @@ export function reducer(state: AppState, action: Action): AppState {
       const has = state.wantToTry.includes(action.restaurantId);
       return {
         ...state,
-        wantToTry: has
-          ? state.wantToTry.filter((id) => id !== action.restaurantId)
-          : [action.restaurantId, ...state.wantToTry],
+        wantToTry: toggle(state.wantToTry, action.restaurantId),
         activity: has
-          ? state.activity
+          ? state.activity.filter((a) => !(a.userId === "me" && a.kind === "bookmarked" && a.restaurantId === action.restaurantId))
           : [
               { id: newId(), userId: "me", restaurantId: action.restaurantId, kind: "bookmarked", at: new Date().toISOString() },
               ...state.activity,
             ],
       };
     }
+    case "toggleLike":
+      return { ...state, likedActivity: toggle(state.likedActivity, action.activityId) };
+    case "toggleFollow":
+      return { ...state, following: toggle(state.following, action.friendId) };
+    case "setGoal":
+      return { ...state, yearlyGoal: Math.max(1, Math.min(365, action.goal)) };
     case "reset":
       return INITIAL_STATE;
   }

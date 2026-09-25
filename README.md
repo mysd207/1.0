@@ -3,8 +3,14 @@
 A mobile-first web prototype of a Beli-style restaurant ranking app, built with React, TypeScript and Vite.
 
 <p>
-  <img src="docs/compare.png" width="260" alt="Pairwise comparison screen" />
-  <img src="docs/lists.png" width="260" alt="Ranked list screen" />
+  <img src="docs/feed.png" width="200" alt="Feed" />
+  <img src="docs/compare.png" width="200" alt="Pairwise comparison" />
+  <img src="docs/result.png" width="200" alt="Ranking result" />
+</p>
+<p>
+  <img src="docs/map.png" width="200" alt="Map view" />
+  <img src="docs/friend.png" width="200" alt="Friend profile with taste match" />
+  <img src="docs/profile.png" width="200" alt="Profile and yearly goal" />
 </p>
 
 ## How ranking works
@@ -19,27 +25,30 @@ The logic is in `src/lib/ranking.ts`, with unit tests in `src/lib/ranking.test.t
 
 ## Features
 
-- **Feed:** activity from you and some seeded friends (rankings, notes, bookmarks).
-- **Lists:** *Been* (your ranked list), *Want to Try* (bookmarks) and *Recs* (places you haven't been, sorted by friends' scores).
-- **Search:** by name, cuisine or neighborhood.
-- **Restaurant page:** your score, friends' average and individual friend scores, plus actions to rank or re-rank, bookmark, and remove.
-- **Leaderboard:** places ranked by you and each friend.
-- **Profile:** stats, top cuisines and your top 5.
+- **Feed:** a *Trending with friends* carousel, *People to follow*, and an activity feed with likes, one-tap save and one-tap rank.
+- **Ranking flow:** sentiment, tags (such as *Date night* or *Great value*), notes, then head-to-head comparisons with a progress bar. It ends on a results screen with confetti showing your score, where the place lands in your list, and progress toward your goal.
+- **Restaurant page:** cover art, description, tags, your score vs. friends' average, what each friend thought, your own visit notes, and *You might also like*.
+- **Lists:** *Been* (grouped by Liked, Fine and Didn't like), *Want to Try*, and *Recs* (places you haven't been, ranked by the friends you follow). There's also a **map view** of NYC with pins colored by your score and filters.
+- **Search:** by name, cuisine, neighborhood or tag, with price and cuisine filter chips. Results are sorted by friends' scores.
+- **Friend profiles:** follow and unfollow, see their ranked list next to your own scores, and a **taste match %**.
+- **Leaderboard:** *Most places* and *Taste match* boards.
+- **Profile:** yearly goal ring (adjustable), average score, number of cuisines and neighborhoods, top-cuisine bars, and your top 5.
+- Light and dark mode.
 
-Data is fictional seed data (`src/data/seed.ts`). Your data is saved to `localStorage`; use *Profile → Reset demo data* to clear it.
+Data is fictional seed data (`src/data/seed.ts`), and cover images are generated gradients. Your data is saved to `localStorage`; use *Profile → Reset demo data* to clear it.
 
 ## Running it
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # ranking unit tests
+npm test           # unit tests
 npm run build      # typecheck + production build
 ```
 
 ## Possible next steps
 
-- A real backend (auth, friends and follow graph, shared data)
-- Real restaurant data and maps (for example, Google Places)
-- Photos and dish tags on reviews
-- Per-city lists, filters (cuisine, price, distance) and a map view
+- A real backend (auth, a real friend graph, shared data)
+- Real restaurant data and photos (for example, Google Places)
+- Photo uploads on reviews
+- Multiple cities, and a real, zoomable map (for example, Mapbox or Leaflet)
