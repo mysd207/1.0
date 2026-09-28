@@ -56,7 +56,7 @@ The logic is in `src/lib/ranking.ts`, with unit tests in `src/lib/ranking.test.t
 - **Profile:** taste profile and taste twins, yearly goal ring (adjustable), average score, number of cuisines and neighborhoods, top-cuisine bars, and your top 5.
 - Light and dark mode.
 
-Data is fictional seed data (`src/data/seed.ts`), and cover images are generated gradients. Your data is saved to `localStorage`; use *Profile → Reset demo data* to clear it.
+Seed data lives in `src/data/seed.ts`. The calibration list uses well-known real NYC restaurants. Everything else (the other restaurants, people, scores and reviews) is made up, and cover images are generated gradients. Your data is saved to `localStorage`; use *Profile → Reset demo data* to clear it.
 
 ## Running it
 
