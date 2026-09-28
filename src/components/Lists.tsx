@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useApp } from "../context";
-import { RESTAURANTS } from "../data/seed";
-import { friendAverage, friendScores, getRestaurant } from "../lib/helpers";
+import { friendAverage, getRestaurant } from "../lib/helpers";
 import { overallOrder, SENTIMENTS } from "../lib/ranking";
 import type { Sentiment } from "../lib/types";
 import { EmptyState, RestaurantRow } from "./common";
 import { MapView } from "./MapView";
+import { PickedForYou } from "./Taste";
 
 type ListTab = "been" | "want" | "recs";
 
@@ -17,15 +17,6 @@ export function Lists({ onSearch }: { onSearch: () => void }) {
   const [mode, setMode] = useState<"list" | "map">("list");
   const been = overallOrder(state.rankings);
   const open = (id: string) => push({ kind: "restaurant", id });
-
-  const recs = useMemo(
-    () =>
-      RESTAURANTS.filter((r) => !(r.id in scores))
-        .map((r) => ({ r, avg: friendAverage(r.id, state.following), who: friendScores(r.id, state.following) }))
-        .filter((x) => x.avg !== undefined)
-        .sort((a, b) => b.avg! - a.avg!),
-    [scores, state.following],
-  );
 
   return (
     <div className="view">
@@ -86,16 +77,10 @@ export function Lists({ onSearch }: { onSearch: () => void }) {
 
           {tab === "recs" && (
             <>
-              <p className="muted small">Places you haven't been, ranked by the friends you follow.</p>
-              {recs.map(({ r, avg, who }) => (
-                <RestaurantRow
-                  key={r.id}
-                  restaurant={r}
-                  score={avg}
-                  onClick={() => open(r.id)}
-                  subtitle={`${who.map((w) => w.friend.avatar).join("")} ${who.length} friend${who.length > 1 ? "s" : ""} · ${r.cuisine}`}
-                />
-              ))}
+              <p className="muted small">
+                Places you haven't been, with a predicted score that leans on the people whose taste matches yours most.
+              </p>
+              <PickedForYou limit={20} />
             </>
           )}
         </>

@@ -31,12 +31,18 @@ export function friendAverage(restaurantId: string, following: string[]): number
 /**
  * How closely a friend's taste matches yours, 0-100, from the places you've
  * both ranked. Undefined until there's some overlap.
+ *
+ * Agreement drops 10 points per point of average disagreement, then is pulled
+ * toward 50 when there's little evidence: one shared place can't make a 99%
+ * match, but five that line up get close.
  */
 export function tasteMatch(mine: Record<string, number>, theirs: Record<string, number>): number | undefined {
   const shared = Object.keys(mine).filter((id) => id in theirs);
   if (shared.length === 0) return undefined;
   const avgDiff = shared.reduce((sum, id) => sum + Math.abs(mine[id] - theirs[id]), 0) / shared.length;
-  return Math.max(0, Math.round(100 - avgDiff * 10));
+  const raw = Math.max(0, 100 - avgDiff * 10);
+  const confidence = shared.length / (shared.length + 1);
+  return Math.round(50 + (raw - 50) * confidence);
 }
 
 export function round1(n: number): number {
@@ -66,7 +72,7 @@ const CUISINE_HUES: Record<string, number> = {
   Italian: 8, Japanese: 350, Mexican: 28, Chinese: 0, French: 220, Korean: 15, Thai: 140,
   Mediterranean: 190, Pizza: 20, American: 35, Indian: 40, Vietnamese: 120, Spanish: 12,
   Bakery: 38, Steakhouse: 5, Vegetarian: 100, Seafood: 200, Ethiopian: 30, Lebanese: 160,
-  Dessert: 320, Diner: 45, Steak: 5,
+  Dessert: 320, Diner: 45, Steak: 5, Deli: 25, "Middle Eastern": 55,
 };
 
 /** Generated "cover photo" gradient, since the prototype has no real images. */

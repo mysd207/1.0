@@ -325,3 +325,62 @@ p { margin: 0; }
 .dot.good { background: var(--good); }
 .dot.want { background: var(--want); }
 .dot.friends { background: var(--brand-2); }
+
+/* ---------- Onboarding ---------- */
+.onboard { padding-top: 8px; gap: 14px; }
+.hero-title { font-size: 32px; line-height: 1.1; margin: 4px 0 0; }
+.welcome { align-items: center; text-align: center; padding-top: 16px; }
+.wordmark.big { font-size: 56px; line-height: 1; }
+.collage { display: grid; grid-template-columns: repeat(3, 96px); gap: 10px; transform: rotate(-6deg); margin: 8px 0 16px; }
+.collage-tile { animation: pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+.collage-tile:nth-child(even) { transform: translateY(14px); }
+.collage-tile .thumb { border-radius: 20px; box-shadow: 0 8px 20px rgb(0 0 0 / 0.12); }
+.value-props { list-style: none; padding: 0; margin: 8px 0; display: flex; flex-direction: column; gap: 14px; text-align: left; width: 100%; }
+.value-props li { display: flex; gap: 14px; align-items: flex-start; background: var(--surface); padding: 14px; border-radius: var(--radius); box-shadow: var(--shadow); }
+.value-props li > span { font-size: 26px; }
+.onboard-cta { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.onboard-cta.sticky { position: sticky; bottom: 0; padding: 12px 0 16px; background: linear-gradient(transparent, var(--bg) 30%); }
+
+.step-dots { display: flex; gap: 6px; }
+.step-dots span { flex: 1; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 8px; border-top: 3px solid var(--surface-2); }
+.step-dots span.on { color: var(--brand); border-color: var(--brand); }
+
+.city { display: flex; align-items: center; gap: 14px; padding: 16px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); font-size: 17px; width: 100%; }
+.city-emoji { font-size: 30px; }
+
+.cal-progress { display: flex; gap: 6px; justify-content: center; }
+.cal-progress span { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-2); transition: all 0.25s; }
+.cal-progress span.done { background: var(--brand); }
+.cal-progress span.now { width: 26px; border-radius: 999px; background: var(--brand-2); }
+.cal-intro { background: var(--brand-soft); color: var(--text); padding: 12px 14px; border-radius: var(--radius); line-height: 1.45; }
+.cal-card { background: var(--surface); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); animation: slide-in 0.3s ease-out; }
+.cal-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 4px; }
+.known-by { display: flex; align-items: center; gap: 8px; color: var(--muted); margin-top: 6px; }
+.avatars { display: inline-flex; }
+.avatars .avatar { box-shadow: 0 0 0 2px var(--surface); margin-right: -6px; }
+.avatars + * { margin-left: 6px; }
+.answers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.answer { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 6px; background: var(--surface); border-radius: var(--radius); border: 2px solid transparent; box-shadow: var(--shadow); font-weight: 700; font-size: 14px; text-align: center; }
+.answer-face { font-size: 30px; }
+.answer.sentiment-liked:hover { border-color: var(--good); }
+.answer.sentiment-fine:hover { border-color: var(--ok); }
+.answer.sentiment-disliked:hover { border-color: var(--bad); }
+.btn.skip { flex: none; color: var(--muted); font-weight: 600; }
+.live-matches { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 8px 12px; border: 1.5px dashed var(--border); border-radius: var(--radius); }
+.live-row { display: flex; gap: 6px; }
+.live-chip { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 13px; color: var(--brand); background: var(--brand-soft); padding: 2px 8px 2px 2px; border-radius: 999px; animation: pop 0.35s ease-out; }
+@keyframes slide-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+
+.reveal .reveal-icon { font-size: 48px; text-align: center; animation: pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1); }
+.reveal .hero-title { text-align: center; }
+.reveal > .lead, .reveal > .btn { align-self: center; text-align: center; }
+
+/* ---------- Taste profile ---------- */
+.traits { gap: 12px; }
+.trait { display: flex; align-items: center; gap: 12px; }
+.trait-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--brand-soft); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.twin { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); }
+.twin-main { display: flex; align-items: center; gap: 12px; width: 100%; }
+.twin > .chip { align-self: flex-end; }
+.match-pct { font-size: 20px; font-weight: 800; color: var(--brand); font-variant-numeric: tabular-nums; }
+.btn.subtle + .btn.subtle { margin-top: 0; }

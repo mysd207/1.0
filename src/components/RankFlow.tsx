@@ -3,7 +3,7 @@ import { useApp } from "../context";
 import { QUICK_TAGS } from "../data/seed";
 import { getRestaurant, priceLabel } from "../lib/helpers";
 import { answer, isDone, maxComparisons, pivotIndex, startComparison, tie, type Comparison } from "../lib/ranking";
-import type { Sentiment } from "../lib/types";
+import type { Restaurant, Sentiment } from "../lib/types";
 import { Cover, TopBar } from "./common";
 
 type Step =
@@ -59,21 +59,13 @@ export function RankFlow({ restaurantId }: { restaurantId: string }) {
           <h2>Which do you prefer?</h2>
           <p className="muted">Tap the one you liked more</p>
         </div>
-        <div className="versus">
-          {[restaurant, other].map((r, i) => (
-            <button key={r.id} className="versus-card" onClick={() => advance(answer(step.comparison, i === 0))}>
-              <Cover restaurant={r} height={120} />
-              <span className="versus-text">
-                <strong>{r.name}</strong>
-                <span className="muted small">{r.cuisine} · {r.neighborhood}</span>
-                {i === 1 && <span className="pill">Your score: {scores[r.id]?.toFixed(1)}</span>}
-                {i === 0 && <span className="pill new">New</span>}
-              </span>
-            </button>
-          ))}
-          <span className="versus-or">VS</span>
-        </div>
-        <button className="link center" onClick={() => advance(tie(step.comparison))}>Too tough to decide</button>
+        <Versus
+          fresh={restaurant}
+          other={other}
+          otherLabel={`Your score: ${scores[other.id]?.toFixed(1)}`}
+          onPick={(freshIsBetter) => advance(answer(step.comparison, freshIsBetter))}
+          onTie={() => advance(tie(step.comparison))}
+        />
       </div>
     );
   }
@@ -106,6 +98,40 @@ export function RankFlow({ restaurantId }: { restaurantId: string }) {
         <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="What did you order? Would you go back?" rows={3} />
       </label>
     </div>
+  );
+}
+
+/** Head-to-head cards: the new place vs. one already on your list. */
+export function Versus({
+  fresh,
+  other,
+  otherLabel,
+  onPick,
+  onTie,
+}: {
+  fresh: Restaurant;
+  other: Restaurant;
+  otherLabel: string;
+  onPick: (freshIsBetter: boolean) => void;
+  onTie: () => void;
+}) {
+  return (
+    <>
+      <div className="versus">
+        {[fresh, other].map((r, i) => (
+          <button key={r.id} className="versus-card" onClick={() => onPick(i === 0)}>
+            <Cover restaurant={r} height={120} />
+            <span className="versus-text">
+              <strong>{r.name}</strong>
+              <span className="muted small">{r.cuisine} · {r.neighborhood}</span>
+              {i === 0 ? <span className="pill new">New</span> : <span className="pill">{otherLabel}</span>}
+            </span>
+          </button>
+        ))}
+        <span className="versus-or">VS</span>
+      </div>
+      <button className="link center" onClick={onTie}>Too tough to decide</button>
+    </>
   );
 }
 

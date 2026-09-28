@@ -10,6 +10,8 @@ export interface Restaurant {
   emoji: string;
   blurb: string;
   tags: string[];
+  /** On the city's curated "most recognized" list used for taste calibration. */
+  iconic?: boolean;
   lat: number;
   lng: number;
 }
@@ -54,4 +56,6 @@ export interface AppState {
   likedActivity: string[];
   following: string[];
   yearlyGoal: number;
+  /** False until the user finishes (or skips) taste calibration. */
+  onboarded: boolean;
 }

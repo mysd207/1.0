@@ -51,6 +51,31 @@ export const RESTAURANTS: Restaurant[] = [
     blurb: "24/7 diner with bottomless coffee and huge omelets.", tags: ["Late night", "Breakfast", "Great value"] },
   { id: "r24", name: "Kanpai Izakaya", cuisine: "Japanese", neighborhood: "Astoria", city: "New York", price: 2, emoji: "🍶", lat: 40.764, lng: -73.923,
     blurb: "Yakitori, highballs and a sake list for every mood.", tags: ["Cocktails", "Groups", "Late night"] },
+  // Curated "most recognized" NYC list, used for taste calibration during onboarding.
+  { id: "i1", name: "Katz's Delicatessen", cuisine: "Deli", neighborhood: "Lower East Side", city: "New York", price: 2, emoji: "🥪", lat: 40.7223, lng: -73.9874, iconic: true,
+    blurb: "Towering hand-carved pastrami on rye, served since 1888.", tags: ["Classic", "Sandwiches", "Iconic"] },
+  { id: "i2", name: "Joe's Pizza", cuisine: "Pizza", neighborhood: "Greenwich Village", city: "New York", price: 1, emoji: "🍕", lat: 40.7306, lng: -74.0021, iconic: true,
+    blurb: "The classic New York slice: thin, foldable, no fuss.", tags: ["Quick bite", "Great value", "Iconic"] },
+  { id: "i3", name: "Shake Shack (Madison Sq. Park)", cuisine: "American", neighborhood: "Flatiron", city: "New York", price: 1, emoji: "🍔", lat: 40.7414, lng: -73.9882, iconic: true,
+    blurb: "The original park kiosk: ShackBurgers and crinkle-cut fries.", tags: ["Burgers", "Outdoor seating", "Iconic"] },
+  { id: "i4", name: "Peter Luger", cuisine: "Steakhouse", neighborhood: "Williamsburg", city: "New York", price: 4, emoji: "🥩", lat: 40.7099, lng: -73.9623, iconic: true,
+    blurb: "Porterhouse for two under the Williamsburg Bridge since 1887.", tags: ["Steak", "Special occasion", "Iconic"] },
+  { id: "i5", name: "Xi'an Famous Foods", cuisine: "Chinese", neighborhood: "East Village", city: "New York", price: 1, emoji: "🌶️", lat: 40.7285, lng: -73.9885, iconic: true,
+    blurb: "Hand-ripped noodles with spicy cumin lamb.", tags: ["Spicy", "Great value", "Iconic"] },
+  { id: "i6", name: "Russ & Daughters", cuisine: "Deli", neighborhood: "Lower East Side", city: "New York", price: 2, emoji: "🐟", lat: 40.7226, lng: -73.9882, iconic: true,
+    blurb: "Smoked fish and bagels from a fourth-generation appetizing shop.", tags: ["Breakfast", "Classic", "Iconic"] },
+  { id: "i7", name: "Magnolia Bakery", cuisine: "Bakery", neighborhood: "West Village", city: "New York", price: 1, emoji: "🧁", lat: 40.7359, lng: -74.005, iconic: true,
+    blurb: "Banana pudding and cupcakes with a cult following.", tags: ["Dessert", "Quick bite", "Iconic"] },
+  { id: "i8", name: "Los Tacos No. 1", cuisine: "Mexican", neighborhood: "Chelsea", city: "New York", price: 1, emoji: "🌮", lat: 40.7424, lng: -74.0061, iconic: true,
+    blurb: "Adobada tacos on fresh tortillas inside Chelsea Market.", tags: ["Tacos", "Quick bite", "Iconic"] },
+  { id: "i9", name: "Levain Bakery", cuisine: "Bakery", neighborhood: "Upper West Side", city: "New York", price: 1, emoji: "🍪", lat: 40.7799, lng: -73.9803, iconic: true,
+    blurb: "Six-ounce cookies, gooey in the middle.", tags: ["Dessert", "Worth the wait", "Iconic"] },
+  { id: "i10", name: "Carbone", cuisine: "Italian", neighborhood: "Greenwich Village", city: "New York", price: 4, emoji: "🍝", lat: 40.7279, lng: -74.0005, iconic: true,
+    blurb: "Red-sauce glamour and the famous spicy rigatoni.", tags: ["Pasta", "Special occasion", "Iconic"] },
+  { id: "i11", name: "The Halal Guys", cuisine: "Middle Eastern", neighborhood: "Midtown", city: "New York", price: 1, emoji: "🥙", lat: 40.7618, lng: -73.979, iconic: true,
+    blurb: "Chicken over rice with the famous white sauce.", tags: ["Late night", "Great value", "Iconic"] },
+  { id: "i12", name: "Di Fara Pizza", cuisine: "Pizza", neighborhood: "Midwood", city: "New York", price: 2, emoji: "🧀", lat: 40.625, lng: -73.9615, iconic: true,
+    blurb: "Hand-crafted pies worth the trek to Midwood.", tags: ["Pizza", "Worth the wait", "Iconic"] },
 ];
 
 export const FRIENDS: Friend[] = [
@@ -60,8 +85,9 @@ export const FRIENDS: Friend[] = [
     handle: "mayaeats",
     avatar: "🦊",
     bio: "Will cross boroughs for a good dumpling.",
-    scores: { r2: 10, r4: 9.4, r6: 8.8, r16: 8.1, r1: 7.5, r9: 6.2, r10: 5.1, r23: 3.9, r15: 2.8 },
+    scores: { r2: 10, r4: 9.4, r6: 8.8, r16: 8.1, r1: 7.5, r9: 6.2, r10: 5.1, r23: 3.9, r15: 2.8, i5: 9.6, i1: 9.0, i2: 7.8, i11: 6.4, i3: 5.5 },
     notes: {
+      i5: "The cumin lamb noodles live in my head rent-free.",
       r2: "Best omakase I've had all year. The uni course 🤯",
       r4: "Cheapest great meal in the city.",
       r16: "Worth the 40-minute wait. Barely.",
@@ -75,8 +101,9 @@ export const FRIENDS: Friend[] = [
     handle: "jreyes",
     avatar: "🐻",
     bio: "Tacos, steak, repeat.",
-    scores: { r3: 10, r15: 9.6, r10: 9.1, r13: 8.3, r7: 7.7, r19: 7.0, r5: 6.1, r18: 4.4 },
+    scores: { r3: 10, r15: 9.6, r10: 9.1, r13: 8.3, r7: 7.7, r19: 7.0, r5: 6.1, r18: 4.4, i4: 9.8, i8: 9.5, i10: 9.2, i1: 8.0, i3: 7.2 },
     notes: {
+      i4: "Still the porterhouse to beat.",
       r3: "Al pastor tacos are unreal.",
       r15: "Porterhouse for two. Clear your evening.",
       r10: "Best burger in Manhattan, I will not be taking questions.",
@@ -89,8 +116,9 @@ export const FRIENDS: Friend[] = [
     handle: "priyaplates",
     avatar: "🐼",
     bio: "Vegetarian, not boring about it.",
-    scores: { r11: 10, r20: 9.3, r8: 8.9, r18: 8.4, r21: 7.9, r12: 7.2, r14: 6.8, r22: 6.0, r2: 5.5 },
+    scores: { r11: 10, r20: 9.3, r8: 8.9, r18: 8.4, r21: 7.9, r12: 7.2, r14: 6.8, r22: 6.0, r2: 5.5, i11: 8.8, i5: 8.2, i7: 7.5, i6: 7.0, i4: 2.5 },
     notes: {
+      i4: "Not a lot for a vegetarian here.",
       r11: "Tastes like my aunt's cooking. Highest compliment.",
       r20: "Get the veggie combo and extra injera.",
       r8: "That patio in September 🌿",
@@ -103,8 +131,9 @@ export const FRIENDS: Friend[] = [
     handle: "samo",
     avatar: "🦉",
     bio: "Oysters are a personality trait.",
-    scores: { r19: 10, r5: 9.2, r1: 8.7, r17: 8.0, r24: 7.4, r6: 7.0, r9: 5.8, r3: 4.9 },
+    scores: { r19: 10, r5: 9.2, r1: 8.7, r17: 8.0, r24: 7.4, r6: 7.0, r9: 5.8, r3: 4.9, i6: 9.4, i10: 8.9, i1: 8.5, i9: 7.6 },
     notes: {
+      i6: "Classic bagel with lox, every single Sunday.",
       r19: "Oysters and sunset on the pier.",
       r5: "Steak frites like I'm back in Paris.",
       r1: "Book 30 days out, it's worth it.",
@@ -116,8 +145,9 @@ export const FRIENDS: Friend[] = [
     handle: "lenaloves",
     avatar: "🐨",
     bio: "Brunch is the most important meal.",
-    scores: { r14: 10, r5: 9.0, r22: 8.6, r1: 8.2, r12: 7.6, r17: 7.1, r9: 6.4, r23: 5.2, r6: 4.1, r7: 3.0 },
+    scores: { r14: 10, r5: 9.0, r22: 8.6, r1: 8.2, r12: 7.6, r17: 7.1, r9: 6.4, r23: 5.2, r6: 4.1, r7: 3.0, i9: 9.8, i7: 9.0, i6: 8.4, i3: 6.8, i2: 6.0 },
     notes: {
+      i9: "Chocolate chip walnut. Nothing else.",
       r14: "Cardamom bun changed my life.",
       r22: "Miso caramel scoop, trust me.",
       r7: "Too spicy for me, but the crowd loved it.",
@@ -129,8 +159,9 @@ export const FRIENDS: Friend[] = [
     handle: "dieguito",
     avatar: "🐯",
     bio: "Exploring every borough, one menu at a time.",
-    scores: { r7: 10, r21: 9.5, r20: 9.0, r3: 8.8, r24: 8.2, r12: 7.9, r4: 7.3, r11: 6.9, r8: 6.3, r10: 5.0, r13: 4.2 },
+    scores: { r7: 10, r21: 9.5, r20: 9.0, r3: 8.8, r24: 8.2, r12: 7.9, r4: 7.3, r11: 6.9, r8: 6.3, r10: 5.0, r13: 4.2, i12: 9.6, i8: 9.1, i5: 8.7, i2: 8.4, i11: 7.9 },
     notes: {
+      i12: "Watching him make the pie is half the experience.",
       r7: "Boat noodles = Elmhurst's best-kept secret.",
       r21: "Worth the R train all the way down.",
       r24: "Tsukune and a highball, perfect Tuesday.",
@@ -181,6 +212,7 @@ export const INITIAL_STATE: AppState = {
   likedActivity: [],
   following: FRIENDS.slice(0, 4).map((f) => f.id),
   yearlyGoal: 25,
+  onboarded: false,
 };
 
 export const QUICK_TAGS = [
@@ -193,3 +225,13 @@ export const QUICK_TAGS = [
   "Solo dining",
   "Special occasion",
 ];
+
+export const CITIES: { name: string; available: boolean; emoji: string }[] = [
+  { name: "New York", available: true, emoji: "🗽" },
+  { name: "Los Angeles", available: false, emoji: "🌴" },
+  { name: "Chicago", available: false, emoji: "🌭" },
+  { name: "San Francisco", available: false, emoji: "🌉" },
+];
+
+/** Number of places a new user rates during taste calibration. */
+export const CALIBRATION_TARGET = 5;

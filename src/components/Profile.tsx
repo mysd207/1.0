@@ -2,6 +2,7 @@ import { useApp } from "../context";
 import { getRestaurant } from "../lib/helpers";
 import { overallOrder } from "../lib/ranking";
 import { Avatar, RestaurantRow, SectionTitle } from "./common";
+import { TasteTwins, TraitsCard } from "./Taste";
 
 function GoalRing({ value, goal }: { value: number; goal: number }) {
   const r = 52;
@@ -63,6 +64,12 @@ export function Profile() {
 
       {count > 0 && (
         <>
+          <SectionTitle>Your taste profile</SectionTitle>
+          <TraitsCard />
+
+          <SectionTitle>Taste twins</SectionTitle>
+          <TasteTwins />
+
           <SectionTitle>Your stats</SectionTitle>
           <div className="stat-row">
             <div className="stat"><span className="stat-num">{avg?.toFixed(1)}</span><span className="muted small">Avg score</span></div>
@@ -90,6 +97,9 @@ export function Profile() {
         </>
       )}
 
+      <button className="btn subtle" onClick={() => dispatch({ type: "restartOnboarding" })}>
+        Redo taste calibration
+      </button>
       <button
         className="btn subtle"
         onClick={() => {

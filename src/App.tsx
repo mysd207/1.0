@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FriendPage } from "./components/FriendPage";
 import { Feed } from "./components/Feed";
 import { Leaderboard } from "./components/Leaderboard";
+import { Onboarding } from "./components/Onboarding";
 import { Lists } from "./components/Lists";
 import { Profile } from "./components/Profile";
 import { RankFlow, RankResult } from "./components/RankFlow";
@@ -41,11 +42,20 @@ export default function App() {
     back: () => setStack((st) => st.slice(0, -1)),
   };
 
+  if (!state.onboarded) {
+    // Keep onboarding mounted under any opened screen so its progress survives "back".
+    return (
+      <AppContext.Provider value={ctx}>
+        <div className="app">
+          <main className="content" hidden={Boolean(top)}><Onboarding /></main>
+          {top && <main className="content">{renderScreen(top)}</main>}
+        </div>
+      </AppContext.Provider>
+    );
+  }
+
   let content;
-  if (top?.kind === "restaurant") content = <RestaurantPage key={top.id} restaurantId={top.id} />;
-  else if (top?.kind === "friend") content = <FriendPage key={top.id} friendId={top.id} />;
-  else if (top?.kind === "rank") content = <RankFlow key={top.id} restaurantId={top.id} />;
-  else if (top?.kind === "result") content = <RankResult restaurantId={top.id} previousScore={top.previousScore} />;
+  if (top) content = renderScreen(top);
   else if (tab === "feed") content = <Feed />;
   else if (tab === "lists") content = <Lists onSearch={() => setTab("search")} />;
   else if (tab === "search") content = <Search />;
@@ -76,4 +86,17 @@ export default function App() {
       </div>
     </AppContext.Provider>
   );
+}
+
+function renderScreen(top: Screen) {
+  switch (top.kind) {
+    case "restaurant":
+      return <RestaurantPage key={top.id} restaurantId={top.id} />;
+    case "friend":
+      return <FriendPage key={top.id} friendId={top.id} />;
+    case "rank":
+      return <RankFlow key={top.id} restaurantId={top.id} />;
+    case "result":
+      return <RankResult restaurantId={top.id} previousScore={top.previousScore} />;
+  }
 }
