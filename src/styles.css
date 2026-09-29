@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
 
 /* Palette and type modeled on the app's UI: white surfaces, deep teal accents, serif wordmark. */
 :root {
@@ -20,7 +19,7 @@
   --radius: 14px;
   --shadow: 0 0 0 1px var(--border);
   --serif: "DM Serif Display", Georgia, "Times New Roman", serif;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
@@ -548,3 +547,44 @@ h3 { color: var(--text); font-size: 15px; letter-spacing: 0.06em; }
 .stat-card { padding: 20px 14px; gap: 12px; }
 .stat-card .muted { font-size: 15px; white-space: nowrap; }
 .stat-card-value { font-size: 20px; white-space: nowrap; }
+
+/* ---------- Calibration, refined ---------- */
+.cal { gap: 12px; }
+.cal-top { display: flex; align-items: center; gap: 16px; padding-top: 6px; }
+.cal-bars { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.cal-bars span { height: 4px; border-radius: 2px; background: var(--surface-2); transition: background 0.3s; }
+.cal-bars span.done { background: var(--brand); }
+.cal-bars span.now { background: color-mix(in srgb, var(--brand) 35%, var(--surface-2)); }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin-top: 10px; }
+.cal-title { font-family: var(--serif); font-weight: 400; font-size: 34px; line-height: 1.08; letter-spacing: -0.01em; margin: 0; }
+.cal-sub { font-size: 15px; margin-top: -4px; }
+.cal-card { border: none; border-radius: 18px; overflow: hidden; background: var(--surface); box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 30px rgb(23 78 91 / 0.10); }
+.cal-card .cover { border-radius: 0; }
+.cover-emoji { filter: drop-shadow(0 14px 18px rgb(0 0 0 / 0.28)); }
+.cover-tag {
+  position: absolute; left: 12px; bottom: 12px; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  color: white; background: rgb(0 0 0 / 0.28); backdrop-filter: blur(6px);
+}
+.cal-body { padding: 14px 16px 16px; gap: 10px; font-size: 15px; line-height: 1.45; }
+.known-by { margin-top: 0; }
+.verdicts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 4px; }
+.verdict { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; text-align: center; padding: 6px 0; }
+.verdict-dot { width: 62px; height: 62px; border-radius: 50%; border: 3px solid; transition: transform 0.12s, background 0.12s; }
+.verdict-liked .verdict-dot { border-color: #4caf6e; background: #e3f4e8; }
+.verdict-fine .verdict-dot { border-color: #e1b53c; background: #fbf2d8; }
+.verdict-disliked .verdict-dot { border-color: #d9584a; background: #fbe4e1; }
+.verdict:hover .verdict-dot, .verdict:active .verdict-dot { transform: scale(1.06); }
+.verdict-liked:hover .verdict-dot { background: #4caf6e; }
+.verdict-fine:hover .verdict-dot { background: #e1b53c; }
+.verdict-disliked:hover .verdict-dot { background: #d9584a; }
+.skip-link { font-weight: 600; font-size: 15px; padding: 4px 0; }
+.live-matches { border: none; background: var(--surface-2); border-radius: 12px; padding: 10px 14px; }
+.live-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.live-chip { background: var(--surface); color: var(--good); padding: 2px 10px 2px 2px; }
+.thumb { border-radius: 10px; }
+.versus-card { border-radius: 16px; }
+.live-matches { flex-direction: column; align-items: flex-start; gap: 8px; }
+.live-label { white-space: nowrap; }
+.reveal .hero-title { margin-top: 0; }
+.reveal .eyebrow { margin-top: 18px; }
+.skip-link { align-self: stretch; text-align: center; }

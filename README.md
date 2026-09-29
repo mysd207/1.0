@@ -28,11 +28,9 @@ It's also built into the rest of the app:
 - **Featured list:** *NYC's Most Recognized — You've been to 2 of 12* sits in Featured Lists and can start or redo calibration.
 - **Taste Profile tab** on every profile shows the "why" behind a match: every place you've both ranked, split into *Where you agree*, *Close enough* and *Where you differ*, with both scores side by side.
 
-<p>
-  <img src="docs/onboarding-calibrate.png" width="200" alt="Calibration" />
-  <img src="docs/feed-unlock.png" width="200" alt="Feed with calibration unlock card" />
-  <img src="docs/friend-taste.png" width="200" alt="Friend taste profile tab" />
-</p>
+![Taste calibration: useful from the first minute](docs/frame-1-calibration.png)
+
+![A match you can see into](docs/frame-2-transparency.png)
 
 How it works under the hood (`src/lib/taste.ts`):
 

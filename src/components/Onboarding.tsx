@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useApp } from "../context";
 import { CALIBRATION_TARGET, CITIES, FRIENDS, RESTAURANTS } from "../data/seed";
-import { formatMatch, friendScores } from "../lib/helpers";
+import { formatMatch, friendScores, priceLabel } from "../lib/helpers";
 import { answer, isDone, overallOrder, pivotIndex, startComparison, tie, type Comparison } from "../lib/ranking";
 import { friendMatches } from "../lib/taste";
 import type { Sentiment } from "../lib/types";
@@ -94,10 +94,10 @@ type CalStep =
   | { kind: "ask" }
   | { kind: "compare"; sentiment: Sentiment; list: string[]; comparison: Comparison };
 
-const ANSWERS: { value: Sentiment; label: string; face: string }[] = [
-  { value: "liked", label: "Loved it", face: "😍" },
-  { value: "fine", label: "It was fine", face: "😐" },
-  { value: "disliked", label: "Not for me", face: "😣" },
+const ANSWERS: { value: Sentiment; label: string }[] = [
+  { value: "liked", label: "I liked it!" },
+  { value: "fine", label: "It was fine" },
+  { value: "disliked", label: "I didn't like it" },
 ];
 
 function Calibrate({ city, redo, onDone }: { city: string; redo: boolean; onDone: () => void }) {
@@ -139,29 +139,26 @@ function Calibrate({ city, redo, onDone }: { city: string; redo: boolean; onDone
   }
 
   const header = (
-    <>
-      <StepDots current={1} />
-      <div className="cal-top">
-        <div className="cal-progress">
-          {Array.from({ length: CALIBRATION_TARGET }, (_, i) => (
-            <span key={i} className={i < rated ? "done" : i === rated ? "now" : ""} />
-          ))}
-        </div>
-        {/* Leaving early keeps what's ranked; the feed card picks up from here. */}
-        <button className="link" onClick={() => dispatch({ type: "finishOnboarding", follow: [] })}>Finish later</button>
+    <div className="cal-top">
+      <div className="cal-bars" aria-label={`${rated} of ${CALIBRATION_TARGET} rated`}>
+        {Array.from({ length: CALIBRATION_TARGET }, (_, i) => (
+          <span key={i} className={i < rated ? "done" : i === rated ? "now" : ""} />
+        ))}
       </div>
-    </>
+      {/* Leaving early keeps what's ranked; the feed card picks up from here. */}
+      <button className="link" onClick={() => dispatch({ type: "finishOnboarding", follow: [] })}>Finish later</button>
+    </div>
   );
+  const eyebrow = <p className="eyebrow">Calibrate your taste · {Math.min(rated + 1, CALIBRATION_TARGET)} of {CALIBRATION_TARGET}</p>;
 
   if (step.kind === "compare") {
     const other = RESTAURANTS.find((r) => r.id === step.list[pivotIndex(step.comparison)])!;
     return (
-      <div className="screen onboard">
+      <div className="screen onboard cal">
         {header}
-        <div className="flow-title">
-          <h2>Which did you like more?</h2>
-          <p className="muted small">This is how Beli works: comparisons, not stars.</p>
-        </div>
+        {eyebrow}
+        <h1 className="cal-title">Which did you like more?</h1>
+        <p className="muted cal-sub">Comparisons, not stars. That's how your scores get worked out.</p>
         <Versus
           fresh={current}
           other={other}
@@ -176,37 +173,37 @@ function Calibrate({ city, redo, onDone }: { city: string; redo: boolean; onDone
   const knownBy = friendScores(current.id, ALL_PEOPLE);
 
   return (
-    <div className="screen onboard">
+    <div className="screen onboard cal">
       {header}
+      {eyebrow}
+      <h1 className="cal-title">Been to {current.name}?</h1>
       {rated === 0 && cursor === 0 && (
-        <p className="cal-intro">
-          <strong>Let's calibrate your taste.</strong> Tell us about {CALIBRATION_TARGET} places most New Yorkers know. Haven't been? Skip it.
-        </p>
+        <p className="muted cal-sub">Five places most New Yorkers know. Haven't been? Skip it.</p>
       )}
       <div className="cal-card" key={current.id}>
-        <Cover restaurant={current} height={180} />
+        <Cover restaurant={current} height={210}>
+          <span className="cover-tag">{current.cuisine} · {priceLabel(current.price)} · {current.neighborhood}</span>
+        </Cover>
         <div className="cal-body">
-          <p className="muted small">{current.cuisine} · {current.neighborhood}</p>
-          <h2 className="tight">Been to {current.name}?</h2>
-          <p className="muted">{current.blurb}</p>
+          <p>{current.blurb}</p>
           {knownBy.length > 0 && (
             <p className="known-by small">
-              <span className="avatars">{knownBy.slice(0, 4).map((k) => <Avatar key={k.friend.id} emoji={k.friend.avatar} size={22} />)}</span>
+              <span className="avatars">{knownBy.slice(0, 4).map((k) => <Avatar key={k.friend.id} emoji={k.friend.avatar} size={24} />)}</span>
               {knownBy.length} people on Beli have ranked this
             </p>
           )}
         </div>
       </div>
-      <div className="answers">
+      <div className="verdicts">
         {ANSWERS.map((a) => (
-          <button key={a.value} className={`answer sentiment-${a.value}`} onClick={() => chooseSentiment(a.value)}>
-            <span className="answer-face">{a.face}</span>
+          <button key={a.value} className={`verdict verdict-${a.value}`} onClick={() => chooseSentiment(a.value)}>
+            <span className="verdict-dot" />
             {a.label}
           </button>
         ))}
       </div>
-      <button className="btn skip" onClick={() => next(false)}>
-        Haven't been · {remaining > 0 ? `${remaining} more to pick from` : "last one"}
+      <button className="link center skip-link" onClick={() => next(false)}>
+        Haven't been. Show me another{remaining > 0 ? ` (${remaining} left)` : ""}
       </button>
       <LiveMatches />
     </div>
@@ -219,19 +216,17 @@ function LiveMatches() {
   const matches = friendMatches(scores).slice(0, 3);
   return (
     <div className="live-matches">
+      <span className="live-label">Your taste twins</span>
       {matches.length === 0 ? (
-        <span className="muted small">Your taste matches will appear here as you go.</span>
+        <span className="muted small">Appear after your first answer</span>
       ) : (
-        <>
-          <span className="muted small">Taste matches so far</span>
-          <span className="live-row">
-            {matches.map((m) => (
-              <span key={m.friend.id} className="live-chip">
-                <Avatar emoji={m.friend.avatar} size={22} /> {formatMatch(m.match)}
-              </span>
-            ))}
-          </span>
-        </>
+        <span className="live-row">
+          {matches.map((m) => (
+            <span key={m.friend.id} className="live-chip">
+              <Avatar emoji={m.friend.avatar} size={26} /> {formatMatch(m.match)}
+            </span>
+          ))}
+        </span>
       )}
     </div>
   );
@@ -260,11 +255,10 @@ function Reveal() {
 
   return (
     <div className="screen onboard reveal">
-      <StepDots current={2} />
-      <span className="reveal-icon">✨</span>
+      <p className="eyebrow center-text">Calibrated · {order.length} {order.length === 1 ? "place" : "places"}</p>
       <h1 className="hero-title">Here's your taste</h1>
       <p className="muted center-text">
-        Based on {order.length} {order.length === 1 ? "place" : "places"}. It gets sharper with every place you rank.
+        It gets sharper with every place you rank.
       </p>
 
       <TraitsCard />

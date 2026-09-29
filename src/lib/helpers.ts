@@ -75,19 +75,37 @@ export function scoreTone(score: number): "good" | "ok" | "bad" {
   return "bad";
 }
 
-const CUISINE_HUES: Record<string, number> = {
-  Italian: 8, Japanese: 350, Mexican: 28, Chinese: 0, French: 220, Korean: 15, Thai: 140,
-  Mediterranean: 190, Pizza: 20, American: 35, Indian: 40, Vietnamese: 120, Spanish: 12,
-  Bakery: 38, Steakhouse: 5, Vegetarian: 100, Seafood: 200, Ethiopian: 30, Lebanese: 160,
-  Dessert: 320, Diner: 45, Steak: 5, Deli: 25, "Middle Eastern": 55,
+// A small, muted, food-editorial palette instead of generated rainbow gradients.
+const PALETTE = {
+  terracotta: "#b65a3c",
+  tomato: "#b8412f",
+  saffron: "#c98a2b",
+  mustard: "#cfa54a",
+  olive: "#7a8243",
+  sage: "#8ea487",
+  forest: "#2f5a48",
+  teal: "#2c6a70",
+  ink: "#223a4c",
+  plum: "#6d3b55",
+  blush: "#d99a86",
+  cocoa: "#6a4636",
+  tan: "#b99470",
 };
 
-/** Generated "cover photo" gradient, since the prototype has no real images. */
+const CUISINE_COLORS: Record<string, string> = {
+  Italian: PALETTE.terracotta, Japanese: PALETTE.ink, Mexican: PALETTE.saffron, Chinese: PALETTE.tomato,
+  French: PALETTE.plum, Korean: PALETTE.cocoa, Thai: PALETTE.olive, Mediterranean: PALETTE.sage,
+  Pizza: PALETTE.tomato, American: PALETTE.mustard, Indian: PALETTE.saffron, Vietnamese: PALETTE.forest,
+  Spanish: PALETTE.terracotta, Bakery: PALETTE.blush, Steakhouse: PALETTE.cocoa, Vegetarian: PALETTE.sage,
+  Seafood: PALETTE.teal, Ethiopian: PALETTE.saffron, Lebanese: PALETTE.olive, Dessert: PALETTE.blush,
+  Diner: PALETTE.mustard, Deli: PALETTE.tan, "Middle Eastern": PALETTE.olive,
+};
+
+/** Cover "photo" for a restaurant: a muted color field with soft light, since the prototype has no real images. */
 export function coverStyle(r: Restaurant): { background: string } {
-  const h = CUISINE_HUES[r.cuisine] ?? (r.id.charCodeAt(1) * 47) % 360;
+  const base = CUISINE_COLORS[r.cuisine] ?? PALETTE.teal;
   return {
-    background: `radial-gradient(circle at 25% 20%, hsl(${h} 90% 72%), transparent 55%),
-      radial-gradient(circle at 80% 90%, hsl(${(h + 40) % 360} 80% 55%), transparent 60%),
-      linear-gradient(135deg, hsl(${h} 70% 58%), hsl(${(h + 330) % 360} 65% 38%))`,
+    background: `radial-gradient(120% 90% at 18% 8%, rgb(255 255 255 / 0.22), transparent 55%),
+      radial-gradient(90% 80% at 100% 100%, rgb(0 0 0 / 0.18), transparent 60%), ${base}`,
   };
 }
