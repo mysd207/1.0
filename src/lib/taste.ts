@@ -35,14 +35,18 @@ export function friendMatches(mine: Scores, friends: Friend[] = FRIENDS): Friend
 /** One-line, human explanation of a match: the "why" behind the number. */
 export function matchReason(m: FriendMatch): string {
   const first = m.friend.name.split(" ")[0];
-  const names = m.agreements.slice(0, 2).map((id) => getRestaurant(id).name);
-  if (names.length === 0) {
+  const names = (ids: string[]) => ids.slice(0, 2).map((id) => getRestaurant(id).name).join(" and ");
+  if (m.agreements.length === 0) {
     const d = m.disagreements[0];
     return d ? `You and ${first} disagree on ${getRestaurant(d).name}` : `You've ranked some of the same places`;
   }
-  const verb = m.agreements.some((id) => (m.friend.scores[id] ?? 0) >= 6.7) ? "rate" : "feel the same about";
-  return `You both ${verb} ${names.join(" and ")} about the same`;
+  // Agreements are within 1.5 points, so a high score from them means you both loved it.
+  const loved = m.agreements.filter((id) => m.friend.scores[id] >= 7.5);
+  return loved.length ? `You both love ${names(loved)}` : `You agree on ${names(m.agreements)}`;
 }
+
+const PRIOR_SCORE = 7;
+const PRIOR_WEIGHT = 0.25;
 
 export interface Rec {
   restaurantId: string;
@@ -66,8 +70,9 @@ export function personalizedRecs(mine: Scores, following: string[], limit = 20):
     if (r.id in mine) continue;
     const raters = pool.filter((f) => r.id in f.scores);
     if (raters.length === 0) continue;
-    let total = 0;
-    let wsum = 0;
+    // Start from a neutral prior so one weakly-matched rater can't produce a 10.0 prediction.
+    let total = PRIOR_SCORE * PRIOR_WEIGHT;
+    let wsum = PRIOR_WEIGHT;
     for (const f of raters) {
       const w = matches.length ? (weight.get(f.id) ?? 0.3) ** 2 : 1;
       total += f.scores[r.id] * w;

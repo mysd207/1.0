@@ -4,9 +4,13 @@ import type { Action } from "./store";
 
 export type Screen =
   | { kind: "restaurant"; id: string }
-  | { kind: "friend"; id: string }
+  | { kind: "friend"; id: string; tab?: "activity" | "taste" | "lists" }
   | { kind: "rank"; id: string }
-  | { kind: "result"; id: string; previousScore?: number };
+  | { kind: "result"; id: string; previousScore?: number }
+  | { kind: "list"; id: string };
+
+export type Tab = "feed" | "lists" | "search" | "leaderboard" | "profile";
+export type ListTab = "been" | "want" | "recs";
 
 export interface AppContextValue {
   state: AppState;
@@ -15,6 +19,10 @@ export interface AppContextValue {
   push: (screen: Screen) => void;
   replace: (screen: Screen) => void;
   back: () => void;
+  /** Jump to a bottom tab (clearing any open screens). */
+  goTab: (tab: Tab, listTab?: ListTab) => void;
+  /** Brief message for things the prototype doesn't do. */
+  toast: (message: string) => void;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);

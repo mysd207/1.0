@@ -45,6 +45,12 @@ export function tasteMatch(mine: Record<string, number>, theirs: Record<string, 
   return Math.round(50 + (raw - 50) * confidence);
 }
 
+/** Match shown the way the app does: relative to a neutral 50, e.g. 88 -> "+38%". */
+export function formatMatch(match: number): string {
+  const d = match - 50;
+  return `${d >= 0 ? "+" : "−"}${Math.abs(d)}%`;
+}
+
 export function round1(n: number): number {
   return Math.round(n * 10) / 10;
 }
@@ -53,13 +59,14 @@ export function priceLabel(price: number): string {
   return "$".repeat(price);
 }
 
-export function timeAgo(iso: string): string {
+export function timeAgo(iso: string, long = false): string {
   const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000));
+  const unit = (n: number, short: string, word: string) => (long ? `${n} ${word}${n === 1 ? "" : "s"} ago` : `${n}${short}`);
   if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m`;
+  if (mins < 60) return unit(mins, "m", "minute");
   const hours = Math.round(mins / 60);
-  if (hours < 24) return `${hours}h`;
-  return `${Math.round(hours / 24)}d`;
+  if (hours < 24) return unit(hours, "h", "hour");
+  return unit(Math.round(hours / 24), "d", "day");
 }
 
 export function scoreTone(score: number): "good" | "ok" | "bad" {

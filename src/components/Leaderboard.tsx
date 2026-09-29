@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useApp } from "../context";
 import { FRIENDS } from "../data/seed";
-import { tasteMatch } from "../lib/helpers";
+import { formatMatch, tasteMatch } from "../lib/helpers";
 import { Avatar } from "./common";
 
 type Board = "count" | "match";
@@ -40,7 +40,7 @@ export function Leaderboard() {
         <button
           key={row.id}
           className={`row ${row.id === "me" ? "me" : ""}`}
-          onClick={() => row.id !== "me" && push({ kind: "friend", id: row.id })}
+          onClick={() => row.id !== "me" && push({ kind: "friend", id: row.id, tab: board === "match" ? "taste" : "activity" })}
         >
           <span className="row-rank">{row.value >= 0 && i < 3 ? medals[i] : i + 1}</span>
           <Avatar emoji={row.avatar} />
@@ -48,7 +48,7 @@ export function Leaderboard() {
             <span className="row-title">{row.name}</span>
             <span className="bar"><span style={{ width: `${Math.max(0, (row.value / max) * 100)}%` }} /></span>
           </span>
-          <span className="count">{row.value < 0 ? "–" : `${row.value}${row.label === "%" ? "%" : ""}`}</span>
+          <span className="count">{row.value < 0 ? "–" : row.label === "%" ? formatMatch(row.value) : row.value}</span>
         </button>
       ))}
       {board === "match" && Object.keys(scores).length === 0 && (

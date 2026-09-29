@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useApp } from "../context";
+import { useApp, type ListTab } from "../context";
 import { friendAverage, getRestaurant } from "../lib/helpers";
 import { overallOrder, SENTIMENTS } from "../lib/ranking";
 import type { Sentiment } from "../lib/types";
@@ -7,13 +7,11 @@ import { EmptyState, RestaurantRow } from "./common";
 import { MapView } from "./MapView";
 import { PickedForYou } from "./Taste";
 
-type ListTab = "been" | "want" | "recs";
-
 const BAND_LABEL: Record<Sentiment, string> = { liked: "😍 Liked", fine: "😐 Fine", disliked: "😣 Didn't like" };
 
-export function Lists({ onSearch }: { onSearch: () => void }) {
-  const { state, scores, push } = useApp();
-  const [tab, setTab] = useState<ListTab>("been");
+export function Lists({ initialTab = "been" }: { initialTab?: ListTab }) {
+  const { state, scores, push, goTab } = useApp();
+  const [tab, setTab] = useState<ListTab>(initialTab);
   const [mode, setMode] = useState<"list" | "map">("list");
   const been = overallOrder(state.rankings);
   const open = (id: string) => push({ kind: "restaurant", id });
@@ -21,7 +19,7 @@ export function Lists({ onSearch }: { onSearch: () => void }) {
   return (
     <div className="view">
       <div className="view-head">
-        <h1>My Lists</h1>
+        <h1>Your Lists</h1>
         <div className="toggle">
           <button className={mode === "list" ? "on" : ""} onClick={() => setMode("list")} aria-label="List view">☰</button>
           <button className={mode === "map" ? "on" : ""} onClick={() => setMode("map")} aria-label="Map view">🗺</button>
@@ -44,7 +42,7 @@ export function Lists({ onSearch }: { onSearch: () => void }) {
                 icon="🍽️"
                 title="Start your list"
                 body="Rank a place you've been. Each new place gets compared against your list, and your scores update as it grows."
-                action={<button className="btn primary" onClick={onSearch}>Find a restaurant</button>}
+                action={<button className="btn primary" onClick={() => goTab("search")}>Find a restaurant</button>}
               />
             ) : (
               SENTIMENTS.filter((s) => state.rankings[s].length > 0).map((s) => (

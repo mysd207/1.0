@@ -8,7 +8,7 @@ describe("friendMatches", () => {
     const matches = friendMatches(mine);
     expect(matches[0].friend.id).toBe("f2");
     expect(matches[0].agreements).toEqual(["i4", "i8"]);
-    expect(matchReason(matches[0])).toContain("Peter Luger");
+    expect(matchReason(matches[0])).toBe("You both love Peter Luger and Los Tacos No. 1");
     const priya = matches.find((m) => m.friend.id === "f3")!;
     expect(priya.disagreements).toContain("i4");
     expect(priya.match).toBeLessThan(matches[0].match);
@@ -35,6 +35,15 @@ describe("personalizedRecs", () => {
     const mine = { i4: 9.9, i8: 9.2, i1: 9.0, i3: 5.0, i5: 7.8, i6: 6.6 };
     const levain = personalizedRecs(mine, ["f1", "f2", "f3", "f4"], 50).find((r) => r.restaurantId === "i9")!;
     expect(levain.because!.score).toBeGreaterThanOrEqual(levain.predicted - 1);
+  });
+});
+
+describe("prediction confidence", () => {
+  it("doesn't predict a perfect score from one weak match", () => {
+    const mine = { i1: 9.0, i2: 5.0, i4: 9.9, i5: 7.8, i6: 6.6 };
+    for (const rec of personalizedRecs(mine, ["f1", "f2", "f3", "f4"], 50)) {
+      if (rec.because && rec.because.match < 70) expect(rec.predicted).toBeLessThan(rec.because.score);
+    }
   });
 });
 

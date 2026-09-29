@@ -1,5 +1,5 @@
 import { useApp } from "../context";
-import { getRestaurant } from "../lib/helpers";
+import { formatMatch, getRestaurant } from "../lib/helpers";
 import { friendMatches, matchReason, personalizedRecs, tasteTraits } from "../lib/taste";
 import { Avatar, RestaurantRow } from "./common";
 
@@ -62,13 +62,13 @@ export function TasteTwins({
         const on = following || selected?.includes(m.friend.id);
         return (
           <div key={m.friend.id} className="twin">
-            <button className="twin-main" onClick={() => !selected && push({ kind: "friend", id: m.friend.id })}>
+            <button className="twin-main" onClick={() => push({ kind: "friend", id: m.friend.id, tab: "taste" })}>
               <Avatar emoji={m.friend.avatar} size={44} />
               <span className="grow">
                 <strong>{m.friend.name}</strong>
                 <span className="muted small block">{matchReason(m)}</span>
               </span>
-              <span className="match-pct">{m.match}%</span>
+              <span className="match-pct">{formatMatch(m.match)}</span>
             </button>
             {!following && (
               <button
@@ -101,7 +101,7 @@ export function PickedForYou({ limit = 3 }: { limit?: number }) {
             onClick={() => push({ kind: "restaurant", id: r.id })}
             subtitle={
               rec.because
-                ? `${rec.because.friend.avatar} ${rec.because.friend.name.split(" ")[0]} (${rec.because.match}% match) gave it ${rec.because.score.toFixed(1)}`
+                ? `${rec.because.friend.avatar} ${rec.because.friend.name.split(" ")[0]} (${formatMatch(rec.because.match)} match) gave it ${rec.because.score.toFixed(1)}`
                 : `${r.cuisine} · ${r.neighborhood}`
             }
           />

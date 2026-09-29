@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { INITIAL_STATE } from "./data/seed";
 import { insertAt, removeFrom, scoresFor } from "./lib/ranking";
-import type { AppState, Sentiment } from "./lib/types";
+import type { AppState, OnboardingEntry, Sentiment } from "./lib/types";
 
 const STORAGE_KEY = "beli-prototype:v2";
 
@@ -13,7 +13,8 @@ export type Action =
   | { type: "toggleFollow"; friendId: string }
   | { type: "setGoal"; goal: number }
   | { type: "finishOnboarding"; follow: string[] }
-  | { type: "restartOnboarding" }
+  | { type: "restartOnboarding"; entry: OnboardingEntry }
+  | { type: "setCity"; city: string }
   | { type: "reset" };
 
 function newId(): string {
@@ -80,10 +81,13 @@ export function reducer(state: AppState, action: Action): AppState {
       return {
         ...state,
         onboarded: true,
+        onboardingEntry: undefined,
         following: [...state.following, ...action.follow.filter((id) => !state.following.includes(id))],
       };
     case "restartOnboarding":
-      return { ...state, onboarded: false };
+      return { ...state, onboarded: false, onboardingEntry: action.entry };
+    case "setCity":
+      return { ...state, city: action.city };
     case "reset":
       return INITIAL_STATE;
   }

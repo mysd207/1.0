@@ -15,24 +15,30 @@ A mobile-first web prototype of a Beli-style restaurant ranking app, built with 
 
 ## Taste calibration onboarding
 
-New users don't start from a blank slate. On first launch they:
+New users don't start from a blank slate. The flow follows the real app's look and patterns: a serif wordmark, teal pills, flat feed rows, a feature-unlock card, featured lists and "+38% Match".
 
-1. **Land** on a welcome page that explains the pitch: rank, don't rate; find your taste twins; never lose a rec.
+1. **Landing page:** the pitch (rank, don't rate; find your taste twins; never lose a rec). *I'll look around first* skips ahead.
 2. **Pick a city.** New York is live, and others are marked "coming soon".
-3. **Calibrate:** rate 5 places from a curated *most recognized* list for that city (Katz's, Joe's Pizza, Peter Luger…). *Haven't been?* skips to the next one. Answers use the real head-to-head ranking, so onboarding also teaches how the app works. A live strip shows taste matches forming as you go.
-4. **See their taste profile:** traits (favorite cuisines, price sweet spot, vibe), the calibrated list with scores, *People who eat like you* with a plain-language reason for each match %, and *Picked for you* recs that say whose taste backs each one.
+3. **Calibrate:** rate 5 places from a curated *most recognized* list (Katz's, Joe's Pizza, Peter Luger…). *Haven't been?* skips to the next one. Answers use the real head-to-head ranking, so onboarding also teaches how the app works. Taste matches appear live as you answer. *Finish later* keeps what you've ranked so far.
+4. **Taste reveal:** traits, your calibrated list, *People who eat like you* with a plain-language reason ("You both love Peter Luger and Katz's"), and *Picked for you* recs that name whose taste backs each one.
+
+It's also built into the rest of the app:
+
+- **Feed unlock card:** until you've ranked 5 places, the feed shows *Rank 3 more places you know! Unlock features as you calibrate (2/5)*, with Match Scores, Taste Twins, Personal Recs, Why You Match and Taste Profile ticking off as you go. *Keep calibrating* resumes where you left off.
+- **Featured list:** *NYC's Most Recognized — You've been to 2 of 12* sits in Featured Lists and can start or redo calibration.
+- **Taste Profile tab** on every profile shows the "why" behind a match: every place you've both ranked, split into *Where you agree*, *Close enough* and *Where you differ*, with both scores side by side.
 
 <p>
-  <img src="docs/onboarding-welcome.png" width="200" alt="Welcome page" />
   <img src="docs/onboarding-calibrate.png" width="200" alt="Calibration" />
-  <img src="docs/onboarding-reveal.png" width="200" alt="Taste profile reveal" />
+  <img src="docs/feed-unlock.png" width="200" alt="Feed with calibration unlock card" />
+  <img src="docs/friend-taste.png" width="200" alt="Friend taste profile tab" />
 </p>
 
 How it works under the hood (`src/lib/taste.ts`):
 
-- **Taste match** measures how closely you agree on places you've both ranked. It is pulled toward 50% when you share only a few places, so a single place in common can't produce a 99% match.
-- **Predicted scores** (*Recs* tab and *Picked for you*) weight each person's score by how well their taste matches yours. Each pick credits the person pulling the prediction up the most.
-- Calibration rankings don't post to the feed. *Profile → Redo taste calibration* runs the flow again.
+- **Taste match** measures how closely you agree on places you've both ranked. It is shown relative to a neutral 50 (88 → "+38% Match") and pulled toward neutral when you share only a few places, so one place in common can't produce a huge match.
+- **Predicted scores** (*Recs*, *Picked for you*) weight each person's score by how well their taste matches yours, starting from a neutral prior so one weak match can't predict a 10.0. Each pick credits the person pulling the prediction up the most.
+- Calibration rankings don't post to the feed. *Profile → Taste Profile → Redo taste calibration* runs it again.
 
 ## How ranking works
 

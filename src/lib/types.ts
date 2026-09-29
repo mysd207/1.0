@@ -35,6 +35,13 @@ export interface Friend {
   scores: Record<string, number>;
   /** restaurantId -> short review */
   notes: Record<string, string>;
+  memberSince: string; // e.g. "July 2023"
+  followers: number;
+  followingCount: number;
+  wantToTryCount: number;
+  streakWeeks: number;
+  rankOnBeli: number;
+  badge?: string; // e.g. "Top 5% New York"
 }
 
 export interface Activity {
@@ -58,4 +65,12 @@ export interface AppState {
   yearlyGoal: number;
   /** False until the user finishes (or skips) taste calibration. */
   onboarded: boolean;
+  /** City picked during onboarding. */
+  city?: string;
+  /** Where onboarding opens: the landing page, or straight back into calibration. */
+  onboardingEntry?: OnboardingEntry;
+  memberSince: string;
 }
+
+/** "resume" continues toward 5 ranked places; "redo" re-asks the whole curated list. */
+export type OnboardingEntry = "welcome" | "resume" | "redo";

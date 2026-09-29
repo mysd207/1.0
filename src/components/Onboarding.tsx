@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useApp } from "../context";
 import { CALIBRATION_TARGET, CITIES, FRIENDS, RESTAURANTS } from "../data/seed";
-import { friendScores } from "../lib/helpers";
+import { formatMatch, friendScores } from "../lib/helpers";
 import { answer, isDone, overallOrder, pivotIndex, startComparison, tie, type Comparison } from "../lib/ranking";
 import { friendMatches } from "../lib/taste";
 import type { Sentiment } from "../lib/types";
 import { Avatar, Cover, RestaurantRow, SectionTitle, Thumb } from "./common";
+import { Icon } from "./icons";
 import { Versus } from "./RankFlow";
 import { PickedForYou, TasteTwins, TraitsCard } from "./Taste";
 
@@ -14,20 +15,23 @@ const ALL_PEOPLE = FRIENDS.map((f) => f.id);
 type Stage = "welcome" | "city" | "calibrate" | "reveal";
 
 export function Onboarding() {
-  const [stage, setStage] = useState<Stage>("welcome");
-  const [city, setCity] = useState("New York");
+  const { state, dispatch } = useApp();
+  const entry = state.onboardingEntry ?? "welcome";
+  // "Keep calibrating" from the feed skips the landing page and city picker.
+  const [stage, setStage] = useState<Stage>(entry === "welcome" ? "welcome" : state.city ? "calibrate" : "city");
+  const city = state.city ?? "New York";
 
   if (stage === "welcome") return <Welcome onStart={() => setStage("city")} />;
   if (stage === "city")
     return (
       <CityPicker
         onPick={(c) => {
-          setCity(c);
+          dispatch({ type: "setCity", city: c });
           setStage("calibrate");
         }}
       />
     );
-  if (stage === "calibrate") return <Calibrate city={city} onDone={() => setStage("reveal")} />;
+  if (stage === "calibrate") return <Calibrate city={city} redo={entry === "redo"} onDone={() => setStage("reveal")} />;
   return <Reveal />;
 }
 
@@ -49,9 +53,9 @@ function Welcome({ onStart }: { onStart: () => void }) {
         Star ratings from strangers don't tell you much. Rank the places you've been, and get scores from people who eat like you.
       </p>
       <ul className="value-props">
-        <li><span>⚖️</span><div><strong>Rank, don't rate</strong><p className="muted small">Compare places head-to-head. Your scores are worked out for you.</p></div></li>
-        <li><span>👯</span><div><strong>Find your taste twins</strong><p className="muted small">See whose taste matches yours, and why.</p></div></li>
-        <li><span>🔖</span><div><strong>Never lose a rec</strong><p className="muted small">Save places and get picks tuned to you.</p></div></li>
+        <li><span><Icon.List size={30} /></span><div><strong>Rank, don't rate</strong><p className="muted small">Compare places head-to-head. Your scores are worked out for you.</p></div></li>
+        <li><span><Icon.Users size={30} /></span><div><strong>Find your taste twins</strong><p className="muted small">See whose taste matches yours, and why.</p></div></li>
+        <li><span><Icon.Bookmark size={28} /></span><div><strong>Never lose a rec</strong><p className="muted small">Save places and get picks tuned to you.</p></div></li>
       </ul>
       <div className="onboard-cta">
         <button className="btn primary wide" onClick={onStart}>Get started</button>
@@ -96,11 +100,12 @@ const ANSWERS: { value: Sentiment; label: string; face: string }[] = [
   { value: "disliked", label: "Not for me", face: "😣" },
 ];
 
-function Calibrate({ city, onDone }: { city: string; onDone: () => void }) {
+function Calibrate({ city, redo, onDone }: { city: string; redo: boolean; onDone: () => void }) {
   const { state, dispatch, scores } = useApp();
-  const pool = RESTAURANTS.filter((r) => r.iconic && r.city === city);
+  // Resuming skips places you've already ranked and counts them toward the 5; redo re-asks all of them.
+  const [pool] = useState(() => RESTAURANTS.filter((r) => r.iconic && r.city === city && (redo || !(r.id in scores))));
   const [cursor, setCursor] = useState(0);
-  const [rated, setRated] = useState(0);
+  const [rated, setRated] = useState(redo ? 0 : Math.min(Object.keys(scores).length, CALIBRATION_TARGET - 1));
   const [step, setStep] = useState<CalStep>({ kind: "ask" });
 
   const current = pool[cursor];
@@ -136,10 +141,14 @@ function Calibrate({ city, onDone }: { city: string; onDone: () => void }) {
   const header = (
     <>
       <StepDots current={1} />
-      <div className="cal-progress">
-        {Array.from({ length: CALIBRATION_TARGET }, (_, i) => (
-          <span key={i} className={i < rated ? "done" : i === rated ? "now" : ""} />
-        ))}
+      <div className="cal-top">
+        <div className="cal-progress">
+          {Array.from({ length: CALIBRATION_TARGET }, (_, i) => (
+            <span key={i} className={i < rated ? "done" : i === rated ? "now" : ""} />
+          ))}
+        </div>
+        {/* Leaving early keeps what's ranked; the feed card picks up from here. */}
+        <button className="link" onClick={() => dispatch({ type: "finishOnboarding", follow: [] })}>Finish later</button>
       </div>
     </>
   );
@@ -218,7 +227,7 @@ function LiveMatches() {
           <span className="live-row">
             {matches.map((m) => (
               <span key={m.friend.id} className="live-chip">
-                <Avatar emoji={m.friend.avatar} size={22} /> {m.match}%
+                <Avatar emoji={m.friend.avatar} size={22} /> {formatMatch(m.match)}
               </span>
             ))}
           </span>

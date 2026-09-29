@@ -85,6 +85,7 @@ export const FRIENDS: Friend[] = [
     handle: "mayaeats",
     avatar: "🦊",
     bio: "Will cross boroughs for a good dumpling.",
+    memberSince: "July 2023", followers: 312, followingCount: 198, wantToTryCount: 142, streakWeeks: 94, rankOnBeli: 10690, badge: "Top 1% New York",
     scores: { r2: 10, r4: 9.4, r6: 8.8, r16: 8.1, r1: 7.5, r9: 6.2, r10: 5.1, r23: 3.9, r15: 2.8, i5: 9.6, i1: 9.0, i2: 7.8, i11: 6.4, i3: 5.5 },
     notes: {
       i5: "The cumin lamb noodles live in my head rent-free.",
@@ -101,6 +102,7 @@ export const FRIENDS: Friend[] = [
     handle: "jreyes",
     avatar: "🐻",
     bio: "Tacos, steak, repeat.",
+    memberSince: "March 2024", followers: 88, followingCount: 102, wantToTryCount: 61, streakWeeks: 12, rankOnBeli: 48211,
     scores: { r3: 10, r15: 9.6, r10: 9.1, r13: 8.3, r7: 7.7, r19: 7.0, r5: 6.1, r18: 4.4, i4: 9.8, i8: 9.5, i10: 9.2, i1: 8.0, i3: 7.2 },
     notes: {
       i4: "Still the porterhouse to beat.",
@@ -116,6 +118,7 @@ export const FRIENDS: Friend[] = [
     handle: "priyaplates",
     avatar: "🐼",
     bio: "Vegetarian, not boring about it.",
+    memberSince: "January 2023", followers: 540, followingCount: 211, wantToTryCount: 230, streakWeeks: 51, rankOnBeli: 7342, badge: "Top 5% New York",
     scores: { r11: 10, r20: 9.3, r8: 8.9, r18: 8.4, r21: 7.9, r12: 7.2, r14: 6.8, r22: 6.0, r2: 5.5, i11: 8.8, i5: 8.2, i7: 7.5, i6: 7.0, i4: 2.5 },
     notes: {
       i4: "Not a lot for a vegetarian here.",
@@ -131,6 +134,7 @@ export const FRIENDS: Friend[] = [
     handle: "samo",
     avatar: "🦉",
     bio: "Oysters are a personality trait.",
+    memberSince: "October 2024", followers: 45, followingCount: 60, wantToTryCount: 38, streakWeeks: 6, rankOnBeli: 90113,
     scores: { r19: 10, r5: 9.2, r1: 8.7, r17: 8.0, r24: 7.4, r6: 7.0, r9: 5.8, r3: 4.9, i6: 9.4, i10: 8.9, i1: 8.5, i9: 7.6 },
     notes: {
       i6: "Classic bagel with lox, every single Sunday.",
@@ -145,6 +149,7 @@ export const FRIENDS: Friend[] = [
     handle: "lenaloves",
     avatar: "🐨",
     bio: "Brunch is the most important meal.",
+    memberSince: "May 2022", followers: 1204, followingCount: 350, wantToTryCount: 412, streakWeeks: 130, rankOnBeli: 2210, badge: "Top 1% Brooklyn",
     scores: { r14: 10, r5: 9.0, r22: 8.6, r1: 8.2, r12: 7.6, r17: 7.1, r9: 6.4, r23: 5.2, r6: 4.1, r7: 3.0, i9: 9.8, i7: 9.0, i6: 8.4, i3: 6.8, i2: 6.0 },
     notes: {
       i9: "Chocolate chip walnut. Nothing else.",
@@ -159,6 +164,7 @@ export const FRIENDS: Friend[] = [
     handle: "dieguito",
     avatar: "🐯",
     bio: "Exploring every borough, one menu at a time.",
+    memberSince: "August 2023", followers: 267, followingCount: 244, wantToTryCount: 97, streakWeeks: 40, rankOnBeli: 15877, badge: "Top 10% Queens",
     scores: { r7: 10, r21: 9.5, r20: 9.0, r3: 8.8, r24: 8.2, r12: 7.9, r4: 7.3, r11: 6.9, r8: 6.3, r10: 5.0, r13: 4.2, i12: 9.6, i8: 9.1, i5: 8.7, i2: 8.4, i11: 7.9 },
     notes: {
       i12: "Watching him make the pie is half the experience.",
@@ -213,7 +219,30 @@ export const INITIAL_STATE: AppState = {
   following: FRIENDS.slice(0, 4).map((f) => f.id),
   yearlyGoal: 25,
   onboarded: false,
+  memberSince: new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
 };
+
+export interface FeaturedList {
+  id: string;
+  title: string;
+  blurb: string;
+  restaurantIds: string[];
+}
+
+const withTag = (tag: string) => RESTAURANTS.filter((r) => r.tags.includes(tag)).map((r) => r.id);
+
+/** Editorial lists shown on the feed. The first is the curated list used for calibration. */
+export const FEATURED_LISTS: FeaturedList[] = [
+  {
+    id: "recognized",
+    title: "NYC's Most Recognized",
+    blurb: "The places nearly every New Yorker has an opinion on. Rank the ones you know to calibrate your taste.",
+    restaurantIds: RESTAURANTS.filter((r) => r.iconic).map((r) => r.id),
+  },
+  { id: "late-night", title: "Top NYC Late Night", blurb: "Still open when you're still hungry.", restaurantIds: withTag("Late night") },
+  { id: "value", title: "Best Value in NYC", blurb: "Big flavor, small check.", restaurantIds: withTag("Great value") },
+  { id: "date", title: "Date Night Spots", blurb: "Dim lights, good wine, better company.", restaurantIds: withTag("Date night") },
+];
 
 export const QUICK_TAGS = [
   "Date night",
